@@ -1,0 +1,50 @@
+{
+    "appName": "Flora and Fauna in City of God",
+    "appVersion": "alpha-0.5",
+    "scriptVersion": "0.25",
+    "apiVersion": "v1",
+    "secret": {
+        "primary":   "M.whq#a7q",
+        "secondary": "oolaOlalaOlaoo:D"
+    },
+    "orm": {
+        "dialect": "mysql",
+        "syncDatabase": true,
+        "logging": true
+    },
+    "mysql": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "user": "root",
+        "password": "root",
+        "database": "test",
+        "pool": true,
+        "minPoolConnections": 10,
+        "maxPoolConnections": 50,
+        "maxConcurrentQueries": 150,
+        "charset": "utf8",
+        "collate": "utf8_general_ci"
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 6379,
+        "auth": "",
+        "collection": {
+        }
+    },
+    "sms": {
+        "host": "www.sms4bd.net",
+        "path": "/HTTP.svc/SendSMS?",
+        "username": "1846812814",
+        "password": "i9(=ne!",
+        "senderId": "SHOPUP",
+        "validity": {
+            "limit": 3,
+            "hour": 12
+        }
+    },
+    "photo": {
+        "fixedWidth": "300",
+        "squareSize": "300x300"
+    }
+}
