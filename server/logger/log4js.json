@@ -1,0 +1,27 @@
+{
+    "appenders": [
+        {
+            "type": "clustered",
+            "appenders": [
+                {
+                    "type": "console"
+                },
+                {
+                    "type": "file",
+                    "absolute": true,
+                    "filename": "/tmp/flora-fauna.log",
+                    "maxLogSize": 200000,
+                    "backups": 100,
+                    "category": "default"
+                },
+                {
+                    "type": "file",
+                    "filename": "/tmp/flora-fauna-request.log",
+                    "maxLogSize": 200000,
+                    "numBackups": 100,
+                    "category": "express"
+                }
+            ]
+        }
+    ]
+}
