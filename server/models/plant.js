@@ -18,7 +18,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         DESCRIPTION: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(4095),
             validate: {
                 min: 5
             }

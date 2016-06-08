@@ -102,8 +102,7 @@ function decodeJwtToken(token){
 }
 
 function isAuthenticated(req, res, next) {
-  var bearerToken = req.headers['x-access-token'];
-  var token = bearerToken ? bearerToken.substr(7) : null;
+  var token = req.headers['x-access-token'];
 
   // decode token
   if (token) {
@@ -166,18 +165,18 @@ function isAdmin(req, res, next) {
 }
 
 
-function refreshToken(user){
-    return jwt.sign(user, configs.secret.primary,{ expiresIn: 60*60*2 });
+function refreshToken(user, callback){
+    return jwt.sign(user, configs.secret.primary,{ expiresIn: 60*60*2 }, callback);
 }
 
-function makeToken(userParam){
+function makeToken(userParam, callback){
     var user = {};
     user.id = userParam.ID;
     user.name = userParam.FULL_NAME;
     user.email = userParam.EMAIL;
     user.phone = userParam.PHONE_NUMBER;
 
-    return jwt.sign(user, configs.secret.primary,{ expiresIn: 60*60*2 });
+    return jwt.sign(user, configs.secret.primary,{ expiresIn: 60*60*2 }, callback);
 }
 
 module.exports = {

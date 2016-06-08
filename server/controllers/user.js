@@ -42,38 +42,51 @@ router.get('/:userId/public-info', function(req, res){
 // curl -H "Content-Type: application/json" -X POST -d '{"email":"", "phoneNo": ""}' http://localhost:3000/v1/user/
 // email is required
 router.post('/', function(req, res) {
+  db.User.create({
+    FULL_NAME: req.body.name,
+    EMAIL: req.body.email,
+    PHONE_NUMBER: req.body.phoneNo || null,
+    PHONE_IS_VERIFIED: false
+  }).then(function(user){
+    res.json({isError: false, body: { user: user }});
+  }).catch(function(error){
+    res.json({isError: false, body: {message: 'Error occured,' + error.message }});
+  });
+});
+
+// curl -H "Content-Type: application/json" -X POST -d '{"email":"", "phoneNo": ""}' http://localhost:3000/v1/user/token
+router.post('/token', function(req, res) {
   if ( req.body.email && req.body.phoneNo ) {
-    var resObj = {};
-    db.User.findOne({where : { EMAIL : req.body.email }}).then(function(user){
+    db.User.findOne({where : { EMAIL : req.body.email }})
+    .then(function(user){
+      if (!user) res.json({isError: true, body: {message: "No user found"}});
+
       var obj = {};
       obj.isNew = false;
-      obj.user = {}
+      obj.user = {};
       obj.user.id = user.ID;
       obj.user.email = user.EMAIL;
       obj.user.name = user.FULL_NAME;
       obj.user.status = user.STATUS;
       
       if ( obj.user.status === 'active') {
-        security.makeToken(user).then(function(token){
-          console.log("In router Post of user controller, makeToken returned: ", token);
-          obj.token = token;
-          res.json({isError: false, body: { result : obj }});
+        security.makeToken(user, function(err, token) {
+          if (err){
+            log.error("Error occured: ", err.message);
+            res.json({isError : true, body: {message: "Could not grant access token"}});
+          } else {
+            log.warn("In router Post of user controller, makeToken returned: ", token);
+            obj.token = token;
+            res.json({isError: false, body: {result: obj}});
+          }
         });
-      } else res.json({isError: true, body: {message: 'User probably not active'}});
+      } else res.json({isError: true, body: {message: 'User status not active'}});
     })
     .catch(function(error) {
+      log.error(error);
       res.json({isError: true, body: {message: 'An error occurred'}});
     });
   } else {
-    db.User.create({
-      FULL_NAME: req.body.name,
-      EMAIL: req.body.email,
-      STATUS: req.body.status || 'pending',
-      PHONE_NUMBER: req.body.phoneNo || null 
-    }).then(function(user){
-      res.json({isError: false, body: { user: user }});
-    }).catch(function(error){
-      res.json({isError: false, body: {message: 'Error occured,' + error.message }});
-    });
+    res.json({isError: true, body: {message: "email and phoneNo fields required, email must be unique"}});
   }
 });
